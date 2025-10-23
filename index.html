@@ -58,26 +58,10 @@
       background: #000;
       z-index: 10000;
       display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      color: white;
     }
 
     .black-screen.active {
-      display: flex;
-    }
-
-    .redirect-text {
-      font-size: 24px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .countdown {
-      font-size: 48px;
-      font-weight: bold;
-      color: var(--primary);
+      display: block;
     }
 
     .header { 
@@ -235,7 +219,6 @@
       display: none;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
     }
 
     .gif-overlay.active {
@@ -246,13 +229,6 @@
       max-width: 90%;
       max-height: 70%;
       object-fit: contain;
-    }
-
-    .loading-text {
-      color: white;
-      font-size: 18px;
-      margin-top: 20px;
-      text-align: center;
     }
     
     .bottom-nav { 
@@ -638,14 +614,6 @@
         height: 36px;
         font-size: 16px;
       }
-
-      .redirect-text {
-        font-size: 18px;
-      }
-
-      .countdown {
-        font-size: 36px;
-      }
     }
     
     body.pc-mode .frog {
@@ -668,28 +636,18 @@
   </style>
 </head>
 <body class="dark-theme mobile-mode">
-  <!-- Audio Element -->
-  <audio id="vhs-sound">
-    <source src="vhs.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-  </audio>
-
   <!-- Black Screen Overlay -->
-  <div class="black-screen" id="black-screen">
-    <div class="redirect-text"></div>
-    <div class="countdown" id="countdown"></div>
-  </div>
+  <div class="black-screen" id="black-screen"></div>
 
   <!-- GIF Overlay -->
   <div class="gif-overlay" id="gif-overlay">
     <img src="vns.gif" class="gif-player" id="gif-player" alt="VHS Effect">
-    <div class="loading-text" id="loading-text"></div>
   </div>
 
   <div class="header">
     <div class="logo">Cvapta</div>
     <div class="stats-container">
-      <div class="stat-box"><i class="fas fa-bolt"></i> <span id="cps">0.0</span>/s</div>
+      <div class="stat-box"><i class="fas fa-bolt"></i> <span id="cps">666</span>/s</div>
       <div class="stat-box"><i class="fas fa-trophy"></i> <span id="total-counter">666</span></div>
     </div>
   </div>
@@ -701,7 +659,7 @@
       <div class="energy-ring-background"></div>
       <div class="energy-ring" id="energy-ring"></div>
       <div class="frog" id="frog">🐸</div>
-      <div class="energy-text" id="energy-text">Energy: 2500/2500</div>
+      <div class="energy-text" id="energy-text">Energy: 666/666</div>
     </div>
   </div>
 
@@ -814,7 +772,7 @@
         <input type="text" class="settings-select" id="promo-input" placeholder="Enter promo code">
         <button class="btn btn-accent" id="promo-btn">Activate</button>
         <div class="promo-codes-list">
-          <p style="font-size: 12px; margin-top: 10px; opacity: 0.7;"></p>
+          <p style="font-size: 12px; margin-top: 10px; opacity: 0.7;">Try codes: FROG666, CLICK666, GREEN666</p>
         </div>
       </div>
     </div>
@@ -838,13 +796,13 @@
         </div>
         
         <div class="stats-chart" id="stats-chart">
-          <div class="chart-bar" style="height: 30%"></div>
-          <div class="chart-bar" style="height: 60%"></div>
-          <div class="chart-bar" style="height: 45%"></div>
-          <div class="chart-bar" style="height: 80%"></div>
-          <div class="chart-bar" style="height: 25%"></div>
-          <div class="chart-bar" style="height: 70%"></div>
-          <div class="chart-bar" style="height: 50%"></div>
+          <div class="chart-bar" style="height: 66%"></div>
+          <div class="chart-bar" style="height: 66%"></div>
+          <div class="chart-bar" style="height: 66%"></div>
+          <div class="chart-bar" style="height: 66%"></div>
+          <div class="chart-bar" style="height: 66%"></div>
+          <div class="chart-bar" style="height: 66%"></div>
+          <div class="chart-bar" style="height: 66%"></div>
         </div>
         
         <div class="stats-grid">
@@ -898,75 +856,38 @@
       }, 3000);
     }
 
-    // GIF и звуковая функциональность
+    // GIF функциональность
     const gifOverlay = document.getElementById('gif-overlay');
-    const gifPlayer = document.getElementById('gif-player');
-    const loadingText = document.getElementById('loading-text');
-    const vhsSound = document.getElementById('vhs-sound');
     const frogElement = document.getElementById('frog');
     const blackScreen = document.getElementById('black-screen');
-    const countdownElement = document.getElementById('countdown');
 
     // Проверяем, был ли уже показ видео
     let hasPlayedOnce = localStorage.getItem('hasPlayedOnce') === 'true';
 
-    // Если уже показывали, сразу показываем черный экран с обратным отсчетом
+    // Если уже показывали, сразу показываем черный экран и переходим
     if (hasPlayedOnce) {
-      startCountdown();
+      blackScreen.classList.add('active');
+      setTimeout(() => {
+        window.location.href = 'https://tqqqka.github.io/capsavta/';
+      }, 100);
     }
 
     // Обработчик клика на лягушку
     frogElement.addEventListener('click', () => {
       if (!hasPlayedOnce) {
-        // Первый раз - показываем GIF и звук
+        // Первый раз - показываем GIF
         hasPlayedOnce = true;
         localStorage.setItem('hasPlayedOnce', 'true');
         
         // Показываем GIF оверлей
         gifOverlay.classList.add('active');
-        loadingText.textContent = "";
         
-        // Запускаем звук
-        vhsSound.play();
-        
-        // Когда звук заканчивается, переходим на другую страницу
-        vhsSound.addEventListener('ended', () => {
-          loadingText.textContent = "";
-          setTimeout(() => {
-            window.location.href = 'https://tqqqka.github.io/capsavta/';
-          }, 1000);
-        });
-
-        // Fallback на случай если звук не загрузится
+        // Ждем немного и переходим
         setTimeout(() => {
-          if (!vhsSound.ended && vhsSound.currentTime > 0) {
-            return;
-          }
-          loadingText.textContent = "";
-          setTimeout(() => {
-            window.location.href = 'https://tqqqka.github.io/capsavta/';
-          }, 1000);
-        }, 10000);
-      } else {
-        // Уже показывали - ничего не делаем (черный экран уже активен)
+          window.location.href = 'https://tqqqka.github.io/capsavta/';
+        }, 3000); // 3 секунды для показа GIF
       }
     });
-
-    // Функция обратного отсчета
-    function startCountdown() {
-      blackScreen.classList.add('active');
-      let countdown = 0;
-      
-      const countdownInterval = setInterval(() => {
-        countdownElement.textContent = countdown;
-        countdown--;
-        
-        if (countdown < 0) {
-          clearInterval(countdownInterval);
-          window.location.href = 'https://tqqqka.github.io/capsavta/';
-        }
-      }, 1000);
-    }
 
     // Обработчики для модальных окон
     document.getElementById('settings-btn').addEventListener('click', () => {
