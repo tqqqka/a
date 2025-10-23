@@ -636,6 +636,12 @@
   </style>
 </head>
 <body class="dark-theme mobile-mode">
+  <!-- Audio Element -->
+  <audio id="vhs-sound">
+    <source src="vhs.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
   <!-- Black Screen Overlay -->
   <div class="black-screen" id="black-screen"></div>
 
@@ -856,10 +862,11 @@
       }, 3000);
     }
 
-    // GIF функциональность
+    // GIF и звуковая функциональность
     const gifOverlay = document.getElementById('gif-overlay');
     const frogElement = document.getElementById('frog');
     const blackScreen = document.getElementById('black-screen');
+    const vhsSound = document.getElementById('vhs-sound');
 
     // Проверяем, был ли уже показ видео
     let hasPlayedOnce = localStorage.getItem('hasPlayedOnce') === 'true';
@@ -875,17 +882,39 @@
     // Обработчик клика на лягушку
     frogElement.addEventListener('click', () => {
       if (!hasPlayedOnce) {
-        // Первый раз - показываем GIF
+        // Первый раз - показываем GIF и включаем звук
         hasPlayedOnce = true;
         localStorage.setItem('hasPlayedOnce', 'true');
         
         // Показываем GIF оверлей
         gifOverlay.classList.add('active');
         
-        // Ждем немного и переходим
-        setTimeout(() => {
+        // Запускаем звук
+        vhsSound.play();
+        
+        // Когда звук заканчивается, переходим на другую страницу
+        vhsSound.addEventListener('ended', () => {
           window.location.href = 'https://tqqqka.github.io/capsavta/';
-        }, 3000); // 3 секунды для показа GIF
+        });
+
+        // Fallback на случай если звук не загрузится
+        setTimeout(() => {
+          if (!vhsSound.ended && vhsSound.currentTime > 0) {
+            return;
+          }
+          window.location.href = 'https://tqqqka.github.io/capsavta/';
+        }, 10000);
+      }
+    });
+
+    // Обработчик F2 для сброса состояния
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'F2') {
+        e.preventDefault();
+        localStorage.removeItem('hasPlayedOnce');
+        hasPlayedOnce = false;
+        blackScreen.classList.remove('active');
+        showToast('Состояние сброшено. Можно посмотреть заново.');
       }
     });
 
